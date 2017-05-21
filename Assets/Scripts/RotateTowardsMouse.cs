@@ -8,6 +8,8 @@ public class RotateTowardsMouse : MonoBehaviour
     private SkeletonAnimation _skeletonAnimation;
     private Spine.Bone _rootBone;
 
+    private float rotationZ;
+
     private Vector3 _mousePos;
 	// Use this for initialization
 	void Start ()
@@ -19,10 +21,19 @@ public class RotateTowardsMouse : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - _rootBone.GetWorldPosition(transform);
         diff.Normalize();
 
-        float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
-        _rootBone.rotation = rot_z;//Quaternion.Euler(0f, 0f, rot_z - 90);
+        rotationZ = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+
+        if (gameObject.GetComponent<SkeletonAnimation>().skeleton.FlipX != true)
+        {
+            _rootBone.rotation = rotationZ;
+        }
+        else
+        {
+            _rootBone.rotation = 180 - rotationZ;
+        }
+        
     }
 }

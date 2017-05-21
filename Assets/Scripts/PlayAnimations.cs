@@ -7,19 +7,23 @@ public class PlayAnimations : MonoBehaviour
 {
     [SerializeField]
     private GameObject _bodyObject;
-    private SkeletonAnimation _bodySkeleton;
+    [HideInInspector]
+    public SkeletonAnimation _bodySkeleton;
 
     [SerializeField]
     private GameObject _headObject;
-    private SkeletonAnimation _headSkeleton;
+    [HideInInspector]
+    public SkeletonAnimation _headSkeleton;
 
     [SerializeField]
     private GameObject _leftArmObject;
-    private SkeletonAnimation _leftArmSkeleton;
+    [HideInInspector]
+    public SkeletonAnimation _leftArmSkeleton;
 
     [SerializeField]
     private GameObject _rightArmObject;
-    private SkeletonAnimation _rightArmSkeleton;
+    [HideInInspector]
+    public SkeletonAnimation _rightArmSkeleton;
 
     void OnEnable ()
     {
@@ -36,16 +40,32 @@ public class PlayAnimations : MonoBehaviour
     {
         _bodySkeleton.loop = true;
         _bodySkeleton.AnimationName = "Run";
-        _headSkeleton.loop = true;
-        _headSkeleton.AnimationName = "Run";
     }
 
     private void AnimateIdle()
     {
         _bodySkeleton.loop = true;
         _bodySkeleton.AnimationName = "Idle";
-        _headSkeleton.loop = true;
-        _headSkeleton.AnimationName = "Idle";
+    }
+
+    private void AnimateJump()
+    {
+        if(GetComponent<PlayerMovement>().isGrounded == true)
+        {
+            StartCoroutine(JumpAnimation());
+        }
+    }
+
+    private IEnumerator JumpAnimation()
+    {
+        _bodySkeleton.AnimationName = "Jump_windup";
+        yield return new WaitForSeconds(0.05f);
+        _bodySkeleton.AnimationName = "Jump_float";
+        while(GetComponent<PlayerMovement>().isGrounded == false)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        _bodySkeleton.AnimationName = "Jump_Land";
     }
 
 	void OnDisable ()
