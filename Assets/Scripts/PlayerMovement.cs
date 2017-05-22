@@ -1,50 +1,59 @@
-﻿using Spine.Unity;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]
     private float _moveSpeed;
-
+    [SerializeField]
+    private float _jumpForce;
+    
     public bool isGrounded = true;
-
-    private PlayAnimations _playAnimations;
 
     private void OnEnable()
     {
         KeyboardInput.OnAButton += MoveLeft;
         KeyboardInput.OnDButton += MoveRight;
-        _playAnimations = GetComponent<PlayAnimations>();
+        KeyboardInput.OnSpaceButton += Jump;
     }
 
     private void MoveLeft()
     {
         transform.Translate(Vector2.left * Time.deltaTime * _moveSpeed);
-        _playAnimations._headSkeleton.skeleton.FlipX = true;
-        _playAnimations._bodySkeleton.skeleton.FlipX = true;
-        _playAnimations._leftArmSkeleton.skeleton.FlipX = true;
-        _playAnimations._rightArmSkeleton.skeleton.FlipX = true;
     }
 
     private void MoveRight()
     {
         transform.Translate(Vector2.right * Time.deltaTime * _moveSpeed);
-        _playAnimations._headSkeleton.skeleton.FlipX = false;
-        _playAnimations._bodySkeleton.skeleton.FlipX = false;
-        _playAnimations._leftArmSkeleton.skeleton.FlipX = false;
-        _playAnimations._rightArmSkeleton.skeleton.FlipX = false;
     }
 
     private void Jump()
     {
-        //GetComponent<Rigidbody2D>().AddForce()
+        if(isGrounded == true)
+        {
+            GetComponent<Rigidbody2D>().AddForce(transform.up * _jumpForce, ForceMode2D.Impulse);
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Ground")
+        {
+            isGrounded = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if(collision.gameObject.tag == "Ground")
+        {
+            isGrounded = false;
+        }
     }
 
     private void OnDisable()
     {
         KeyboardInput.OnAButton -= MoveLeft;
         KeyboardInput.OnDButton -= MoveRight;
+        KeyboardInput.OnSpaceButton -= Jump;
     }
 }

@@ -1,6 +1,4 @@
 ﻿using Spine.Unity;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class RotateTowardsMouse : MonoBehaviour
@@ -9,6 +7,7 @@ public class RotateTowardsMouse : MonoBehaviour
     private Spine.Bone _rootBone;
 
     private float rotationZ;
+    private float rotationOffset = 180f;
 
     private Vector3 _mousePos;
 	// Use this for initialization
@@ -32,7 +31,7 @@ public class RotateTowardsMouse : MonoBehaviour
         }
         else
         {
-            _rootBone.rotation = 180 - rotationZ;
+            _rootBone.rotation = rotationOffset - rotationZ;
         }
         
     }

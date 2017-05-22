@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class KeyboardInput : MonoBehaviour
 {
@@ -31,13 +29,6 @@ public class KeyboardInput : MonoBehaviour
                 OnDButton();
             }
         }
-        else if(Input.GetKeyDown(KeyCode.Space))
-        {
-            if(OnSpaceButton != null)
-            {
-                OnSpaceButton();
-            }
-        }
         else
         {
             if(OnNoMovement != null)
@@ -46,7 +37,16 @@ public class KeyboardInput : MonoBehaviour
             }
         }
 
-        if(Input.GetMouseButtonDown(0))
+        
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (OnSpaceButton != null)
+            {
+                OnSpaceButton();
+            }
+        }
+
+        if (Input.GetMouseButtonDown(0))
         {
             if(OnLeftMouseButton != null)
             {

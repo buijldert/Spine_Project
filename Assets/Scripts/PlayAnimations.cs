@@ -1,6 +1,5 @@
 ﻿using Spine.Unity;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayAnimations : MonoBehaviour
@@ -30,6 +29,7 @@ public class PlayAnimations : MonoBehaviour
         KeyboardInput.OnAButton += AnimateRun;
         KeyboardInput.OnDButton += AnimateRun;
         KeyboardInput.OnNoMovement += AnimateIdle;
+        KeyboardInput.OnSpaceButton += AnimateJump;
         _bodySkeleton = _bodyObject.GetComponent<SkeletonAnimation>();
         _headSkeleton = _headObject.GetComponent<SkeletonAnimation>();
         _leftArmSkeleton = _leftArmObject.GetComponent<SkeletonAnimation>();
@@ -44,13 +44,16 @@ public class PlayAnimations : MonoBehaviour
 
     private void AnimateIdle()
     {
-        _bodySkeleton.loop = true;
-        _bodySkeleton.AnimationName = "Idle";
+        if (GetComponent<PlayerMovement>().isGrounded == true)
+        {
+            _bodySkeleton.loop = true;
+            _bodySkeleton.AnimationName = "Idle";
+        }
     }
 
     private void AnimateJump()
     {
-        if(GetComponent<PlayerMovement>().isGrounded == true)
+        if (GetComponent<PlayerMovement>().isGrounded == true)
         {
             StartCoroutine(JumpAnimation());
         }
@@ -60,6 +63,7 @@ public class PlayAnimations : MonoBehaviour
     {
         _bodySkeleton.AnimationName = "Jump_windup";
         yield return new WaitForSeconds(0.05f);
+        _bodySkeleton.loop = true;
         _bodySkeleton.AnimationName = "Jump_float";
         while(GetComponent<PlayerMovement>().isGrounded == false)
         {
@@ -73,5 +77,6 @@ public class PlayAnimations : MonoBehaviour
         KeyboardInput.OnAButton -= AnimateRun;
         KeyboardInput.OnDButton -= AnimateRun;
         KeyboardInput.OnNoMovement -= AnimateIdle;
+        KeyboardInput.OnSpaceButton -= AnimateJump;
     }
 }
